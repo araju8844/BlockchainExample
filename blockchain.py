@@ -46,11 +46,31 @@ class Blockchain:
 
         #all blocks checked after this loop is gone through
         return True
-        
+
 
 
     #function to resolve conflicts in between chains
+    def resolve_conflicts(self):
+        neighbors = self.nodes #load address book into mutable temp
+        new_chain = None # temp, store for neighbor's chain
 
+        max_length = len(self.chain)
+
+        for node in neighbors:
+            response = requests.get(f"http://{node}/chain")
+
+            if response.status_code == 200:
+                length = response.json()['length']
+                chain = repsonse.json()["chain"]
+
+                if length > max_length and self.valid_chain(chain):
+                    max_length = length
+                    new_chain = chain
+
+        if new_chain:
+            self.chain = new_chain
+            return True
+        return False
 
     #function to create a new block
     def new_block(self,proof,previous_hash):
@@ -103,7 +123,7 @@ class Blockchain:
     def valid_proof(last_proof, proof, last_hash):
         #dont do this, for simplification
         #create a proof based on these encoded values
-        guess = f'{last_proof}{proof}{last_hash}'.encode()
+        guess = f"{last_proof}{proof}{last_hash}".encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
 
         #a valid proof will have first four bits zeroes
