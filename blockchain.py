@@ -24,9 +24,28 @@ class Blockchain:
     #function to resolve conflicts in between chains
 
     #function to create a new block
-    def new_block(self,previous_hash,proof):
-        pass
+    def new_block(self,proof,previous_hash):
+        #what we need to make the block
+        block = {
+            "index": len(self.chain)-1,
+            "timestamp": time(),
+            "transactions": self.current_transactions,
+            "proof": proof,
+            "previous_hash": previous_hash or self.hash(self.last_block)
+        }
+
+        #reset the list of our un_tracked transactions
+        self.current_transactions = []
+
+        #append the new block of our chain
+        self.chain.append(block)
+
+        #return our block object
+        return block
+
     #function to create a new sale/transaction of money
+
+
 
     #function to get the most recent block of the blockchain
     @property
@@ -40,7 +59,24 @@ class Blockchain:
         #return SHA256 has in hex
         return hashlib.sha256(strBlock).hexdigest()
     #function to check the proof of work of a block
+    def proof_of_work(self, last_block):
+        last_proof = last_block["proof"] #getting your proof from your last block
+        last_hash = self.hash(last_block) #recalc last hash
+
+        proof = 0
+        while self.valid_proof(last_proof, proof, last_hash) is False:
+            proof += 1 #iterate
+            
+        return proof
 
     #function to check if a proof of work is valid
+    @staticmethod
+    def valid_proof(last_proof, proof, last_hash):
+        #dont do this, for simplification
+        #create a proof based on these encoded values
+        guess = f'{last_proof}{proof}{last_hash}'.encode()
+        guess_hash = hashlib.sha256(guess).hexdigest()
 
+        #a valid proof will have first four bits zeroes
+        return guess_hash[:4] == "0000"
     
