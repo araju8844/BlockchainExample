@@ -93,7 +93,15 @@ class Blockchain:
         return block
 
     #function to create a new sale/transaction of money
+    def new_transactions(self, sender, recipient, amount):
+        self.current_transactions.append({
+            "sender": sender,
+            "recipient": recipient,
+            "amount": amount
+        })
 
+        #return the index of the new transaction
+        return self.last_block["index"] + 1
 
 
     #function to get the most recent block of the blockchain
