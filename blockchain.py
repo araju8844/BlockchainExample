@@ -18,6 +18,16 @@ class Blockchain:
 
 
     #function to register a neighboring node (other user) in personal address book
+    def register_node(self,address):
+        parsed_url = urlparse(address) #parse value into url
+
+        if parsed_url.netloc: #if there is a specific net location address
+            self.nodes.add(parsed_url.netloc)
+        elif parsed_url.path: #if URL doesn't have schema e.g. "192.168.1.1:3000"
+            self.nodes.add(parsed_url.path)
+        else: #if no url provided
+            raise ValueError("Invalid address")
+
 
     #function to check for valid chain
 
@@ -66,7 +76,7 @@ class Blockchain:
         proof = 0
         while self.valid_proof(last_proof, proof, last_hash) is False:
             proof += 1 #iterate
-            
+
         return proof
 
     #function to check if a proof of work is valid
