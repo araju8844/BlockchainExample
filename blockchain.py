@@ -30,8 +30,27 @@ class Blockchain:
 
 
     #function to check for valid chain
+    def valid_chain(self, chain):
+        last_block = chain[0] #iterate through all blocks
+        #we are chekcing the hash values lining up instead of checking proof
+        current_index = 1
+        while current_index < len(chain):
+            block = chain[current_index] #store current block
+            last_block_hash = self.hash(last_block)
+
+            if block["previous_hash"] != last_block_hash:
+                return False
+
+            last_block = block
+            current_index += 1
+
+        #all blocks checked after this loop is gone through
+        return True
+        
+
 
     #function to resolve conflicts in between chains
+
 
     #function to create a new block
     def new_block(self,proof,previous_hash):
