@@ -1,4 +1,4 @@
-from __main__ import app
+from main import app
 
 # route to 'mine' (post) a new block
 
